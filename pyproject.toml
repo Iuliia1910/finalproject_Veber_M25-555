@@ -1,0 +1,16 @@
+[project]
+name = "finalproject-veber-m25-555"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Iuliia Veber",email = "pestonova.yulya@yandex.ru"}
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
