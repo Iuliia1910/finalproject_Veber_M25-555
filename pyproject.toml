@@ -1,16 +1,27 @@
-[project]
+[tool.poetry]
 name = "finalproject-veber-m25-555"
 version = "0.1.0"
-description = ""
-authors = [
-    {name = "Iuliia Veber",email = "pestonova.yulya@yandex.ru"}
-]
+description = "ValutaTrade Hub - управление валютными портфелями"
+authors = ["Iuliia Veber <pestonova.yulya@yandex.ru>"]
 readme = "README.md"
-requires-python = ">=3.13"
-dependencies = [
+
+# Указываем, что основной пакет находится в корне
+packages = [
+    { include = "valutatrade_hub", from = "." }
 ]
 
+# Или можно отключить package mode если возникают проблемы
+# package-mode = false
+
+[tool.poetry.scripts]
+project = "valutatrade_hub.cli.interface:main"
+
+[tool.poetry.dependencies]
+python = "^3.11"  # Рекомендую использовать 3.11 вместо 3.13 для совместимости
+
+[tool.ruff]
+line-length = 120
 
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
+requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
