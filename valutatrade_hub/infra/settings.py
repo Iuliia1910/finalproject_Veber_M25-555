@@ -2,10 +2,9 @@ import toml
 from typing import Any
 
 class SettingsLoader:
-    """
-    Singleton для конфигурации проекта.
-    Загружает секцию [tool.valutatrade] из pyproject.toml и кэширует.
-    """
+
+    #Singleton для конфигурации проекта.
+    #Загружает секцию [tool.valutatrade] из pyproject.toml и кэширует.
     _instance = None
     _settings: dict = {}
 
@@ -24,9 +23,7 @@ class SettingsLoader:
             self._settings = {}
 
     def get(self, key: str, default: Any = None) -> Any:
-        """Возвращает значение ключа конфигурации, или default если отсутствует"""
         return self._settings.get(key, default)
 
     def reload(self):
-        """Перезагружает конфигурацию (например, если поменяли pyproject.toml)"""
         self._load_settings()

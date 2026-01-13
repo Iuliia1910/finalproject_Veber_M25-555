@@ -23,12 +23,10 @@ class RatesCache:
 
         updated_at = datetime.fromisoformat(pair["updated_at"])
         if datetime.now(timezone.utc) - updated_at > self.ttl:
-            # Данные устарели
             return None
         return pair
 
     def update_pair(self, from_currency, to_currency, rate, source, updated_at=None):
-        """Добавляем или обновляем курс только если новый updated_at свежее"""
         updated_at = updated_at or datetime.now(timezone.utc).isoformat()
         key = f"{from_currency.upper()}_{to_currency.upper()}"
         current = self.data.get("pairs", {}).get(key)
@@ -43,7 +41,6 @@ class RatesCache:
             self._save_file()
 
     def _save_file(self):
-        """Атомарная запись через временный файл"""
         with tempfile.NamedTemporaryFile("w", delete=False, encoding="utf-8") as tmp_file:
             json.dump(self.data, tmp_file, indent=2, ensure_ascii=False)
             tmp_name = tmp_file.name

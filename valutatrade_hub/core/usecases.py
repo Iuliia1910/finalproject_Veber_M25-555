@@ -9,26 +9,12 @@ from valutatrade_hub.decorators import log_action
 from valutatrade_hub.infra.settings import SettingsLoader
 from pathlib import Path
 
-
-# ================= SETTINGS SINGLETON =================
 settings = SettingsLoader()
 portfolios_file = Path(settings.get("PORTFOLIOS_FILE", "data/portfolios.json"))
 rates_file = Path(settings.get("RATES_FILE", "data/rates.json"))
 users_file = Path(settings.get("USERS_FILE", 'data/users.json'))
 default_base_currency = settings.get("DEFAULT_BASE_CURRENCY", "USD")
 DEFAULT_BASE_CURRENCY = "USD"
-
-# ================= ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ =================
-def write_portfolio(user_id: int, wallets: dict):
-    """Обновляет кошельки пользователя"""
-    portfolios = load_json(portfolios_file)
-    portfolio = next((p for p in portfolios if p["user_id"] == user_id), None)
-    if not portfolio:
-        portfolio = {"user_id": user_id, "wallets": wallets}
-        portfolios.append(portfolio)
-    else:
-        portfolio["wallets"] = wallets
-    save_json(portfolios_file, portfolios)
 
 def load_json(path: str) -> Any:
     try:
@@ -45,24 +31,51 @@ def generate_salt(length=8) -> str:
     return os.urandom(length).hex()
 
 def hash_password(password: str, salt: str) -> str:
-    """Хэшируем пароль с солью"""
     return hashlib.sha256((password + salt).encode()).hexdigest()
 
 def now_iso() -> str:
     return datetime.utcnow().isoformat()
 
+def get_rate(from_code: str, to_code: str) -> float:
+    from_code = from_code.upper()
+    to_code = to_code.upper()
+
+    if not rates_file.exists():
+        raise CurrencyNotFoundError(f"Файл курсов {rates_file} не найден")
+
+    with rates_file.open("r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    pairs = data.get("pairs", {})
+
+    pair_key = f"{from_code}_{to_code}"
+    reverse_key = f"{to_code}_{from_code}"
+
+    if pair_key in pairs:
+        return pairs[pair_key]["rate"]
+    elif reverse_key in pairs:
+        return 1 / pairs[reverse_key]["rate"]
+    else:
+        raise CurrencyNotFoundError(f"Курс для {from_code}→{to_code} не найден")
+
 def read_portfolio(user_id: int) -> dict:
-    """Возвращает словарь кошельков пользователя"""
-    if not portfolios_file.exists():
-        return {}
-    with portfolios_file.open("r", encoding="utf-8") as f:
-        portfolios = json.load(f)
-
+    portfolios = load_json(portfolios_file)
     portfolio = next((p for p in portfolios if p["user_id"] == user_id), None)
-    return portfolio["wallets"] if portfolio else {}
+    if portfolio:
+        return {k.upper(): v for k, v in portfolio.get("wallets", {}).items()}
+    return {}
 
+def write_portfolio(user_id: int, wallets: dict):
+    portfolios = load_json(portfolios_file)
+    portfolio = next((p for p in portfolios if p["user_id"] == user_id), None)
+    wallets_upper = {k.upper(): v for k, v in wallets.items()}
+    if not portfolio:
+        portfolio = {"user_id": user_id, "wallets": wallets_upper}
+        portfolios.append(portfolio)
+    else:
+        portfolio["wallets"] = wallets_upper
+    save_json(portfolios_file, portfolios)
 
-# ================= USECASES =================
 @log_action("REGISTER")
 def register(username: str, password: str):
     username = username.strip()
@@ -159,35 +172,26 @@ def deposit(user_id: int, currency: str, amount: float):
 
 @log_action("BUY")
 def buy(user_id: int, currency_code: str, amount: float, base_currency: str = None):
-    base_currency = (base_currency or DEFAULT_BASE_CURRENCY).upper()
+    base_currency = base_currency or DEFAULT_BASE_CURRENCY
     currency_code = currency_code.upper()
+    base_currency = base_currency.upper()
 
     if amount <= 0:
         raise ValueError("'amount' должен быть > 0")
 
-    # проверка валют
-    get_currency(currency_code)
-    get_currency(base_currency)
+    # валидируем валюту
+    try:
+        get_currency(currency_code)
+        get_currency(base_currency)
+    except CurrencyNotFoundError as e:
+        raise e
 
     wallets = read_portfolio(user_id)
     wallets[currency_code] = wallets.get(currency_code, {"balance": 0.0})
+    old_balance = wallets[currency_code]["balance"]
 
-    # Получаем курсы из rates.json
-    if not rates_file.exists():
-        raise CurrencyNotFoundError("Нет данных по курсам")
-    with rates_file.open("r", encoding="utf-8") as f:
-        rates_data = json.load(f)
-    rates = rates_data.get("pairs", {})
-
-    pair_key = f"{currency_code}_{base_currency}"
-    reverse_key = f"{base_currency}_{currency_code}"
-
-    if pair_key in rates:
-        rate = rates[pair_key]["rate"]
-    elif reverse_key in rates:
-        rate = 1 / rates[reverse_key]["rate"]
-    else:
-        raise CurrencyNotFoundError(f"Курс {currency_code}->{base_currency} не найден")
+    # получаем курс
+    rate = get_rate(currency_code, base_currency)
 
     cost_in_base = amount * rate
     wallets[base_currency] = wallets.get(base_currency, {"balance": 0.0})
@@ -197,53 +201,46 @@ def buy(user_id: int, currency_code: str, amount: float, base_currency: str = No
     # обновляем кошельки
     wallets[base_currency]["balance"] -= cost_in_base
     wallets[currency_code]["balance"] += amount
+    new_balance = wallets[currency_code]["balance"]
 
     write_portfolio(user_id, wallets)
 
     return {
-        "currency": currency_code,
+        "old_balance": old_balance,
+        "new_balance": new_balance,
         "amount": amount,
+        "currency": currency_code,
         "rate": rate,
         "base_currency": base_currency,
-        "cost_in_base": cost_in_base,
-        "new_balance": wallets[currency_code]["balance"]
+        "cost_in_base": cost_in_base
     }
+
 
 @log_action("SELL")
 def sell(user_id: int, currency_code: str, amount: float, base_currency: str = None):
-    base_currency = (base_currency or DEFAULT_BASE_CURRENCY).upper()
+    base_currency = base_currency or DEFAULT_BASE_CURRENCY
     currency_code = currency_code.upper()
+    base_currency = base_currency.upper()
 
     if amount <= 0:
         raise ValueError("'amount' должен быть > 0")
 
-    get_currency(currency_code)
-    get_currency(base_currency)
+    try:
+        get_currency(currency_code)
+        get_currency(base_currency)
+    except CurrencyNotFoundError as e:
+        raise e
 
     wallets = read_portfolio(user_id)
-    if currency_code not in wallets:
-        raise CurrencyNotFoundError(currency_code)
+    if currency_code not in wallets or wallets[currency_code]["balance"] <= 0:
+        raise CurrencyNotFoundError(f"Валюта '{currency_code}' не поддерживается или отсутствует в портфеле.")
 
-    if amount > wallets[currency_code]["balance"]:
-        raise InsufficientFundsError(wallets[currency_code]["balance"], amount, currency_code)
+    old_balance = wallets[currency_code]["balance"]
+    if amount > old_balance:
+        raise InsufficientFundsError(old_balance, amount, currency_code)
 
-    # Получаем курсы
-    if not rates_file.exists():
-        raise CurrencyNotFoundError("Нет данных по курсам")
-    with rates_file.open("r", encoding="utf-8") as f:
-        rates_data = json.load(f)
-    rates = rates_data.get("pairs", {})
-
-    pair_key = f"{currency_code}_{base_currency}"
-    reverse_key = f"{base_currency}_{currency_code}"
-
-    if pair_key in rates:
-        rate = rates[pair_key]["rate"]
-    elif reverse_key in rates:
-        rate = 1 / rates[reverse_key]["rate"]
-    else:
-        raise CurrencyNotFoundError(f"Курс {currency_code}->{base_currency} не найден")
-
+    # получаем курс
+    rate = get_rate(currency_code, base_currency)
     revenue_in_base = amount * rate
 
     wallets[currency_code]["balance"] -= amount
@@ -253,26 +250,28 @@ def sell(user_id: int, currency_code: str, amount: float, base_currency: str = N
     write_portfolio(user_id, wallets)
 
     return {
-        "currency": currency_code,
+        "old_balance": old_balance,
+        "new_balance": wallets[currency_code]["balance"],
         "amount": amount,
+        "currency": currency_code,
         "rate": rate,
         "base_currency": base_currency,
-        "revenue_in_base": revenue_in_base,
-        "new_balance": wallets[currency_code]["balance"]
+        "revenue_in_base": revenue_in_base
     }
+
+
 
 def get_rate_usecase(from_code: str, to_code: str):
     from_code = from_code.upper()
     to_code = to_code.upper()
 
-    # проверка валют через иерархию
     try:
         get_currency(from_code)
         get_currency(to_code)
     except CurrencyNotFoundError as e:
         raise e
 
-    rates = load_json(rates_file)  # вместо db.load("rates")
+    rates = load_json(rates_file)
     pairs = rates.get("pairs", {})
 
     pair_key = f"{from_code}_{to_code}"

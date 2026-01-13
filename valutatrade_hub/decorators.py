@@ -1,7 +1,6 @@
 import logging
 from functools import wraps
 
-# Настройка логгера (можно вынести в logging_config.py)
 logger = logging.getLogger("actions_logger")
 logger.setLevel(logging.INFO)
 formatter = logging.Formatter(
@@ -13,11 +12,6 @@ logger.addHandler(file_handler)
 
 
 def log_action(action: str, verbose: bool = True):
-    """
-    Декоратор для логирования доменных операций.
-    action: строка, например "BUY", "SELL"
-    verbose: добавляет контекст "было→стало"
-    """
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -50,7 +44,7 @@ def log_action(action: str, verbose: bool = True):
                 if verbose and old_balance is not None and new_balance is not None:
                     log_msg += f" ({old_balance:.4f} → ???)"
                 logger.error(log_msg)
-                raise  # пробрасываем исключение дальше
+                raise
 
         return wrapper
     return decorator

@@ -1,17 +1,11 @@
-"""
-Конфигурация логирования для ValutaTrade Hub.
-"""
-
 import logging
 import logging.config
 import json
 from datetime import datetime
-
-from valutatrade_hub.infra.settings import settings
+from valutatrade_hub.infra import settings
 
 
 class JSONFormatter(logging.Formatter):
-    """Форматирование логов в JSON."""
 
     def format(self, record: logging.LogRecord) -> str:
         log_data = {
@@ -21,7 +15,6 @@ class JSONFormatter(logging.Formatter):
             "message": record.getMessage(),
         }
 
-        # Добавляем дополнительные поля если есть
         if hasattr(record, 'action'):
             log_data['action'] = record.action
         if hasattr(record, 'user_id'):
@@ -35,7 +28,6 @@ class JSONFormatter(logging.Formatter):
 
 
 def setup_logging():
-    """Настройка логирования."""
 
     log_config = {
         "version": 1,
@@ -93,18 +85,14 @@ def setup_logging():
     try:
         logging.config.dictConfig(log_config)
     except Exception as e:
-        # Если не удалось настроить файловое логирование, используем только консоль
-        print(f"⚠️  Не удалось настроить файловое логирование: {e}")
-        # Простая настройка только консоли
+        print(f" Не удалось настроить файловое логирование: {e}")
         logging.basicConfig(
             level=getattr(logging, settings.get("log_level", "INFO").upper()),
             format=settings.get("log_format", "%(levelname)s - %(message)s")
         )
 
 
-# Создаем логгеры
 logger = logging.getLogger("valutatrade")
 actions_logger = logging.getLogger("valutatrade.actions")
 
-# Инициализируем логирование
 setup_logging()

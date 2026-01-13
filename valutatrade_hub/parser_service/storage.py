@@ -7,17 +7,11 @@ class RatesStorage:
         self.file_path = Path(file_path)
         self.file_path.parent.mkdir(parents=True, exist_ok=True)
         if not self.file_path.exists():
-            self.file_path.write_text("[]")  # создаём пустой JSON
+            self.file_path.write_text("[]")
 
     def save_rates(self, rates):
-        """
-        Сохраняет новые курсы в файл.
-        Каждая запись должна иметь уникальный id.
-        Сохраняем атомарно через временный файл.
-        """
         existing = self.load_all()
 
-        # Генерируем id и добавляем только новые записи
         new_records = []
         existing_ids = {r["id"] for r in existing}
         for r in rates:
@@ -26,7 +20,6 @@ class RatesStorage:
             if record_id not in existing_ids:
                 record = r.copy()
                 record["id"] = record_id
-                # Добавляем поле meta с минимальной информацией
                 record["meta"] = {
                     "raw_id": r.get("meta", {}).get("raw_id", r.get("from_currency")),
                     "status_code": r.get("meta", {}).get("status_code", 200),
@@ -37,7 +30,6 @@ class RatesStorage:
 
         all_records = existing + new_records
 
-        # Атомарная запись через временный файл
         with tempfile.NamedTemporaryFile("w", delete=False, encoding="utf-8") as tmp_file:
             json.dump(all_records, tmp_file, indent=2, ensure_ascii=False)
             tmp_name = tmp_file.name

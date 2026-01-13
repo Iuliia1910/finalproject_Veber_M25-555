@@ -4,13 +4,11 @@ from abc import ABC, abstractmethod
 from .config import ParserConfig
 
 class ApiRequestError(Exception):
-    """Выбрасывается при ошибках обращения к внешним API"""
     pass
 
 class BaseApiClient(ABC):
     @abstractmethod
     def fetch_rates(self) -> dict:
-        """Возвращает словарь курсов валют в формате {PAIR: rate}"""
         pass
 
 class CoinGeckoClient(BaseApiClient):
@@ -47,26 +45,19 @@ class ExchangeRateApiClient(BaseApiClient):
         self.config = config
 
     def fetch_rates(self) -> dict:
-        """
-        Получает курсы фиатных валют относительно BASE_CURRENCY.
-        Возвращает словарь вида {'EUR_USD': 1.23, ...}.
-        """
         url = f"{self.config.EXCHANGERATE_API_URL}/{self.config.EXCHANGERATE_API_KEY}/latest/{self.config.BASE_FIAT_CURRENCY}"
         try:
             resp = requests.get(url, timeout=self.config.REQUEST_TIMEOUT)
             resp.raise_for_status()
             data = resp.json()
 
-            # Проверяем результат API
             if data.get("result") != "success":
                 raise ApiRequestError(f"Ошибка ExchangeRate-API: {data.get('error-type', 'Unknown error')}")
 
-            # Новое поле в актуальном API
             rates = data.get("conversion_rates")
             if not rates:
                 raise ApiRequestError("Ошибка ExchangeRate-API: отсутствует поле 'conversion_rates'")
 
-            # Фильтруем только нужные валюты из списка FIAT_CURRENCIES
             filtered = {
                 f"{curr}_{self.config.BASE_FIAT_CURRENCY}": rate
                 for curr, rate in rates.items()

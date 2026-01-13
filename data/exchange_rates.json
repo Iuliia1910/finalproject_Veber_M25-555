@@ -460,5 +460,257 @@
       "request_ms": 0,
       "etag": ""
     }
+  },
+  {
+    "from_currency": "BTC",
+    "to_currency": "USD",
+    "rate": 93969,
+    "timestamp": "2026-01-13T19:38:06.069573+00:00",
+    "source": "CoinGeckoClient",
+    "id": "BTCUSD_2026-01-13T19:38:06.069573+00:00",
+    "meta": {
+      "raw_id": "BTC",
+      "status_code": 200,
+      "request_ms": 0,
+      "etag": ""
+    }
+  },
+  {
+    "from_currency": "ETH",
+    "to_currency": "USD",
+    "rate": 3208.8,
+    "timestamp": "2026-01-13T19:38:06.069573+00:00",
+    "source": "CoinGeckoClient",
+    "id": "ETHUSD_2026-01-13T19:38:06.069573+00:00",
+    "meta": {
+      "raw_id": "ETH",
+      "status_code": 200,
+      "request_ms": 0,
+      "etag": ""
+    }
+  },
+  {
+    "from_currency": "SOL",
+    "to_currency": "USD",
+    "rate": 143.73,
+    "timestamp": "2026-01-13T19:38:06.069573+00:00",
+    "source": "CoinGeckoClient",
+    "id": "SOLUSD_2026-01-13T19:38:06.069573+00:00",
+    "meta": {
+      "raw_id": "SOL",
+      "status_code": 200,
+      "request_ms": 0,
+      "etag": ""
+    }
+  },
+  {
+    "from_currency": "EUR",
+    "to_currency": "USD",
+    "rate": 0.8566,
+    "timestamp": "2026-01-13T19:38:06.352403+00:00",
+    "source": "ExchangeRateApiClient",
+    "id": "EURUSD_2026-01-13T19:38:06.352403+00:00",
+    "meta": {
+      "raw_id": "EUR",
+      "status_code": 200,
+      "request_ms": 0,
+      "etag": ""
+    }
+  },
+  {
+    "from_currency": "GBP",
+    "to_currency": "USD",
+    "rate": 0.7428,
+    "timestamp": "2026-01-13T19:38:06.352403+00:00",
+    "source": "ExchangeRateApiClient",
+    "id": "GBPUSD_2026-01-13T19:38:06.352403+00:00",
+    "meta": {
+      "raw_id": "GBP",
+      "status_code": 200,
+      "request_ms": 0,
+      "etag": ""
+    }
+  },
+  {
+    "from_currency": "RUB",
+    "to_currency": "USD",
+    "rate": 78.5337,
+    "timestamp": "2026-01-13T19:38:06.352403+00:00",
+    "source": "ExchangeRateApiClient",
+    "id": "RUBUSD_2026-01-13T19:38:06.352403+00:00",
+    "meta": {
+      "raw_id": "RUB",
+      "status_code": 200,
+      "request_ms": 0,
+      "etag": ""
+    }
+  },
+  {
+    "from_currency": "BTC",
+    "to_currency": "USD",
+    "rate": 94166,
+    "timestamp": "2026-01-13T19:59:28.605227+00:00",
+    "source": "CoinGeckoClient",
+    "id": "BTCUSD_2026-01-13T19:59:28.605227+00:00",
+    "meta": {
+      "raw_id": "BTC",
+      "status_code": 200,
+      "request_ms": 0,
+      "etag": ""
+    }
+  },
+  {
+    "from_currency": "ETH",
+    "to_currency": "USD",
+    "rate": 3212.91,
+    "timestamp": "2026-01-13T19:59:28.605227+00:00",
+    "source": "CoinGeckoClient",
+    "id": "ETHUSD_2026-01-13T19:59:28.605227+00:00",
+    "meta": {
+      "raw_id": "ETH",
+      "status_code": 200,
+      "request_ms": 0,
+      "etag": ""
+    }
+  },
+  {
+    "from_currency": "SOL",
+    "to_currency": "USD",
+    "rate": 144.02,
+    "timestamp": "2026-01-13T19:59:28.605227+00:00",
+    "source": "CoinGeckoClient",
+    "id": "SOLUSD_2026-01-13T19:59:28.605227+00:00",
+    "meta": {
+      "raw_id": "SOL",
+      "status_code": 200,
+      "request_ms": 0,
+      "etag": ""
+    }
+  },
+  {
+    "from_currency": "EUR",
+    "to_currency": "USD",
+    "rate": 0.8566,
+    "timestamp": "2026-01-13T19:59:28.889668+00:00",
+    "source": "ExchangeRateApiClient",
+    "id": "EURUSD_2026-01-13T19:59:28.889668+00:00",
+    "meta": {
+      "raw_id": "EUR",
+      "status_code": 200,
+      "request_ms": 0,
+      "etag": ""
+    }
+  },
+  {
+    "from_currency": "GBP",
+    "to_currency": "USD",
+    "rate": 0.7428,
+    "timestamp": "2026-01-13T19:59:28.889668+00:00",
+    "source": "ExchangeRateApiClient",
+    "id": "GBPUSD_2026-01-13T19:59:28.889668+00:00",
+    "meta": {
+      "raw_id": "GBP",
+      "status_code": 200,
+      "request_ms": 0,
+      "etag": ""
+    }
+  },
+  {
+    "from_currency": "RUB",
+    "to_currency": "USD",
+    "rate": 78.5337,
+    "timestamp": "2026-01-13T19:59:28.889668+00:00",
+    "source": "ExchangeRateApiClient",
+    "id": "RUBUSD_2026-01-13T19:59:28.889668+00:00",
+    "meta": {
+      "raw_id": "RUB",
+      "status_code": 200,
+      "request_ms": 0,
+      "etag": ""
+    }
+  },
+  {
+    "from_currency": "BTC",
+    "to_currency": "USD",
+    "rate": 94215,
+    "timestamp": "2026-01-13T20:03:23.044927+00:00",
+    "source": "CoinGeckoClient",
+    "id": "BTCUSD_2026-01-13T20:03:23.044927+00:00",
+    "meta": {
+      "raw_id": "BTC",
+      "status_code": 200,
+      "request_ms": 0,
+      "etag": ""
+    }
+  },
+  {
+    "from_currency": "ETH",
+    "to_currency": "USD",
+    "rate": 3214.8,
+    "timestamp": "2026-01-13T20:03:23.044927+00:00",
+    "source": "CoinGeckoClient",
+    "id": "ETHUSD_2026-01-13T20:03:23.044927+00:00",
+    "meta": {
+      "raw_id": "ETH",
+      "status_code": 200,
+      "request_ms": 0,
+      "etag": ""
+    }
+  },
+  {
+    "from_currency": "SOL",
+    "to_currency": "USD",
+    "rate": 144.11,
+    "timestamp": "2026-01-13T20:03:23.044927+00:00",
+    "source": "CoinGeckoClient",
+    "id": "SOLUSD_2026-01-13T20:03:23.044927+00:00",
+    "meta": {
+      "raw_id": "SOL",
+      "status_code": 200,
+      "request_ms": 0,
+      "etag": ""
+    }
+  },
+  {
+    "from_currency": "EUR",
+    "to_currency": "USD",
+    "rate": 0.8566,
+    "timestamp": "2026-01-13T20:03:23.333313+00:00",
+    "source": "ExchangeRateApiClient",
+    "id": "EURUSD_2026-01-13T20:03:23.333313+00:00",
+    "meta": {
+      "raw_id": "EUR",
+      "status_code": 200,
+      "request_ms": 0,
+      "etag": ""
+    }
+  },
+  {
+    "from_currency": "GBP",
+    "to_currency": "USD",
+    "rate": 0.7428,
+    "timestamp": "2026-01-13T20:03:23.333313+00:00",
+    "source": "ExchangeRateApiClient",
+    "id": "GBPUSD_2026-01-13T20:03:23.333313+00:00",
+    "meta": {
+      "raw_id": "GBP",
+      "status_code": 200,
+      "request_ms": 0,
+      "etag": ""
+    }
+  },
+  {
+    "from_currency": "RUB",
+    "to_currency": "USD",
+    "rate": 78.5337,
+    "timestamp": "2026-01-13T20:03:23.333313+00:00",
+    "source": "ExchangeRateApiClient",
+    "id": "RUBUSD_2026-01-13T20:03:23.333313+00:00",
+    "meta": {
+      "raw_id": "RUB",
+      "status_code": 200,
+      "request_ms": 0,
+      "etag": ""
+    }
   }
 ]

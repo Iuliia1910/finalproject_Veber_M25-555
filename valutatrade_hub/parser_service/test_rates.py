@@ -1,7 +1,6 @@
 import sys
 import os
 
-# Добавляем корень проекта в sys.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from valutatrade_hub.parser_service.config import ParserConfig

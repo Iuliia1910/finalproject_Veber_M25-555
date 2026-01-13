@@ -1,7 +1,7 @@
 import json
 import logging
 from pathlib import Path
-from valutatrade_hub.core.usecases import register, login, deposit, buy, sell, get_rate_usecase 
+from valutatrade_hub.core.usecases import register, login, deposit, buy, sell, get_rate_usecase
 from valutatrade_hub.core.exceptions import InsufficientFundsError, CurrencyNotFoundError, ApiRequestError
 from valutatrade_hub.parser_service.config import ParserConfig
 from valutatrade_hub.parser_service.api_clients import CoinGeckoClient, ExchangeRateApiClient
@@ -11,15 +11,12 @@ from valutatrade_hub.core.utils import RatesCache
 from valutatrade_hub.infra.settings import SettingsLoader
 logger = logging.getLogger(__name__)
 
-
-# ================= ГЛОБАЛЬНАЯ СЕССИЯ =================
-current_user = None  # {"user_id": int, "username": str} после login
+current_user = None
 SUPPORTED_CURRENCIES = ["USD", "EUR", "RUB", "BTC", "ETH"]
 ttl_seconds = SettingsLoader().get("RATES_CACHE_TTL", 3600)
 PORTFOLIO_FILE = Path("data/portfolios.json")
 cache = RatesCache(ttl_seconds=ttl_seconds)
 
-# ================= ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ =================
 def get_user_portfolio(user_id: int):
     if not PORTFOLIO_FILE.exists():
         return {"user_id": user_id, "wallets": {}}
@@ -27,12 +24,10 @@ def get_user_portfolio(user_id: int):
     with open(PORTFOLIO_FILE, "r", encoding="utf-8") as f:
         data = json.load(f)
 
-    # data — это список, ищем пользователя по id
     for user in data:
         if user["user_id"] == user_id:
             return user
 
-    # если не нашли
     return {"user_id": user_id, "wallets": {}}
 
 def show_portfolio(base_currency: str = "USD"):
@@ -62,19 +57,13 @@ def show_portfolio(base_currency: str = "USD"):
         except CurrencyNotFoundError:
             print(f"- {code}: {amount:.4f}  → ??? {base_currency} (курс отсутствует)")
 
-    print("-" * 40)
     print(f"ИТОГО: {total:.2f} {base_currency}\n")
 
 def update_rates_cli(source: str = None):
-    """
-    CLI-команда для обновления курсов валют.
-    :param source: None или "coingecko" / "exchangerate"
-    """
     config = ParserConfig()
     storage = RatesStorage(config.HISTORY_FILE_PATH)
     cache = RatesCache(file_path=config.RATES_FILE_PATH, ttl_seconds=3600)
 
-    # Определяем клиентов
     clients = []
     if source is None:
         clients = [CoinGeckoClient(config), ExchangeRateApiClient(config)]
@@ -101,7 +90,6 @@ def update_rates_cli(source: str = None):
         print(f"Unexpected error: {e}")
         print("Update failed. Check logs/parser.log for details.")
 
-# ================= ИНТЕРАКТИВНОЕ МЕНЮ =================
 MENU_OPTIONS = {
     "1": "register",
     "2": "login",
@@ -111,14 +99,14 @@ MENU_OPTIONS = {
     "6": "sell",
     "7": "get-rate",
     "8": "logout",
-    "9": "update-rates",  # исправлено имя и добавлена запятая
+    "9": "update-rates",
     "0": "exit"
 }
 
 
 def interactive_cli():
     global current_user
-    print("=== ВАЛЮТНЫЙ КЛИЕНТ ===")
+    print("ValutaTrade")
 
     config = ParserConfig()
     storage = RatesStorage(config.HISTORY_FILE_PATH)
@@ -134,13 +122,12 @@ def interactive_cli():
             print(f"{key}. {cmd}")
 
         choice = input("Введите команду или номер: ").strip().lower()
-        cmd = MENU_OPTIONS.get(choice, choice)  # если ввели число, преобразуем в команду
+        cmd = MENU_OPTIONS.get(choice, choice)
 
         if cmd == "exit":
             print("Выход...")
             break
 
-        # ================= Существующие команды =================
         elif cmd == "register":
             username = input("Username: ")
             password = input("Password: ")
@@ -187,6 +174,7 @@ def interactive_cli():
             if not current_user:
                 print("Сначала выполните login")
                 continue
+
             currency = input("Валюта для покупки: ").strip().upper()
             try:
                 amount = float(input("Сумма покупки: "))
@@ -194,22 +182,19 @@ def interactive_cli():
                 print("Сумма должна быть числом больше 0")
                 continue
 
-            # Ловим ошибки декорированной функции здесь
+            base = input("Базовая валюта (по умолчанию USD): ").strip().upper() or "USD"
+
             try:
-                result = buy(current_user["user_id"], currency, amount)
-            except CurrencyNotFoundError:
-                print(f"Ошибка: Валюта '{currency}' не поддерживается.")
-                continue
+                result = buy(current_user["user_id"], currency, amount, base)
+                print(f"Покупка выполнена: {result['amount']:.4f} {currency} "
+                      f"(курс: {result['rate']:.4f} {result['base_currency']}, "
+                      f"потрачено: {result['cost_in_base']:.2f} {result['base_currency']})")
             except InsufficientFundsError as e:
-                print(
-                    f"Ошибка: недостаточно средств. Нужно {e.required:.2f} {e.currency}, доступно {e.available:.2f} {e.currency}")
-                continue
+                print(f"Ошибка: {e}")
+            except ValueError as e:
+                print(f"Ошибка: {e}")
             except Exception as e:
                 print(f"Неожиданная ошибка: {e}")
-                continue
-
-            print(
-                f"Покупка выполнена: {result['amount']:.4f} {currency} (курс: {result['rate']:.4f} {result['base_currency']})")
 
 
         elif cmd == "sell":
@@ -220,31 +205,24 @@ def interactive_cli():
             currency = input("Валюта для продажи: ").strip().upper()
             try:
                 amount = float(input("Сумма продажи: "))
-                if amount <= 0:
-                    print("Сумма должна быть больше 0")
-                    continue
             except ValueError:
-                print("Сумма должна быть числом")
+                print("Сумма должна быть числом больше 0")
                 continue
+
+            base = input("Базовая валюта (по умолчанию USD): ").strip().upper() or "USD"
 
             try:
-                result = sell(current_user["user_id"], currency, amount)
-            except CurrencyNotFoundError:
-                print(f"Ошибка: Валюта '{currency}' не поддерживается или отсутствует в портфеле.")
-                continue
+                result = sell(current_user["user_id"], currency, amount, base)
+                print(f"Продажа выполнена: {result['amount']:.4f} {currency} "
+                      f"(курс: {result['rate']:.4f} {result['base_currency']}, "
+                      f"получено: {result['revenue_in_base']:.2f} {result['base_currency']})")
             except InsufficientFundsError as e:
-                print(
-                    f"Ошибка: недостаточно средств для продажи. Нужно {e.required:.4f} {currency}, доступно {e.available:.4f} {currency}")
-                continue
-            except ApiRequestError as e:
-                print(f"Ошибка при получении курса: {e}")
-                continue
+                print(f"Ошибка: {e}")
+            except ValueError as e:
+                print(f"Ошибка: {e}")
             except Exception as e:
                 print(f"Неожиданная ошибка: {e}")
-                continue
 
-            print(
-                f"Продажа выполнена: {result['amount']:.4f} {currency} → {result['revenue_in_base']:.2f} {result['base_currency']}")
 
         elif cmd == "get-rate":
             from_curr = input("Откуда: ").strip().upper()
@@ -259,7 +237,6 @@ def interactive_cli():
             except ApiRequestError as e:
                 print(f"Ошибка API: {e}. Повторите позже / проверьте сеть")
 
-        # ================= НОВАЯ КОМАНДА =================
         elif cmd == "update-rates":
             source_input = input("Источник (coingecko / exchangerate / all): ").strip().lower()
             if source_input in ("all", ""):
@@ -285,7 +262,6 @@ def interactive_cli():
         else:
             print("Неизвестная команда. Попробуйте снова.")
 
-# ================= ТОЧКА ВХОДА =================
 def main():
     interactive_cli()
 

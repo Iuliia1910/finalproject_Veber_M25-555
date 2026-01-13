@@ -1,10 +1,8 @@
 from abc import ABC, abstractmethod
 
-# ================= ОШИБКА ДЛЯ НЕИЗВЕСТНОЙ ВАЛЮТЫ =================
 class CurrencyNotFoundError(Exception):
     pass
 
-# ================= АБСТРАКТНЫЙ КЛАСС =================
 class Currency(ABC):
     def __init__(self, name: str, code: str):
         name = name.strip()
@@ -23,7 +21,6 @@ class Currency(ABC):
         """Возвращает строку для UI/логов"""
         pass
 
-# ================= FIAT ВАЛЮТА =================
 class FiatCurrency(Currency):
     def __init__(self, name: str, code: str, issuing_country: str):
         super().__init__(name, code)
@@ -35,7 +32,6 @@ class FiatCurrency(Currency):
     def get_display_info(self) -> str:
         return f"[FIAT] {self.code} — {self.name} (Issuing: {self.issuing_country})"
 
-# ================= КРИПТОВАЛЮТА =================
 class CryptoCurrency(Currency):
     def __init__(self, name: str, code: str, algorithm: str, market_cap: float):
         super().__init__(name, code)
@@ -51,7 +47,6 @@ class CryptoCurrency(Currency):
         mcap_str = f"{self.market_cap:.2e}"
         return f"[CRYPTO] {self.code} — {self.name} (Algo: {self.algorithm}, MCAP: {mcap_str})"
 
-# ================= РЕЕСТР / ФАБРИКА ВАЛЮТ =================
 _currency_registry = {
     # Fiat
     "USD": lambda: FiatCurrency("US Dollar", "USD", "United States"),

@@ -101,3 +101,6 @@ valutatrade(alice)> update_rates
 valutatrade(alice)> buy EUR 100
 valutatrade(alice)> sell BTC 1
 valutatrade(alice)> logout
+
+
+Демо работы CLI можно посмотреть [здесь](https://asciinema.org/a/A7KVS8yZDy5K38am).
