@@ -4,4 +4,7 @@ __pycache__/
 dist/
 *.log
 .env
+.idea/
+.DS_Store
+
 
