@@ -1,23 +1,16 @@
 [
-  {
-    "user_id": 1,
-    "username": "alice",
-    "hashed_password": "5821c4448bc455d4cc20ceaa8b3f0c1e2a1e8c31c93ca8a27fde9aa2fa2e4ee1",
-    "salt": "8d0143ee3fafded3",
-    "registration_date": "2026-01-09T17:39:50.442103"
-  },
-  {
-    "user_id": 2,
-    "username": "kate",
-    "hashed_password": "f80e2238091b609b106880e0b087b4f198974d4aaab7d7c2dcdeb29076aa6c0d",
-    "salt": "bde5f647923cee74",
-    "registration_date": "2026-01-09T18:39:50.967837"
-  },
-  {
-    "user_id": 3,
-    "username": "simone",
-    "hashed_password": "8529014de53cbfc65baeea94db487be702c9ab6d948583ad90f6e070079d18f6",
-    "salt": "b67a38569e41c46c",
-    "registration_date": "2026-01-09T22:35:30.517523"
-  }
+    {
+        "user_id": 1,
+        "username": "alice",
+        "hashed_password": "4c4584371291a1ede3196fb7f283a7bd6d5b134efe967ca7b6c03270e6882a47",
+        "salt": "8691ddd8b0294ee2",
+        "registration_date": "2026-01-13T14:34:25.010988"
+    },
+    {
+        "user_id": 2,
+        "username": "kate",
+        "hashed_password": "39e8bd23631679881fe02474e14ce50276c3f4b8ee371a3e7e567ba975ed4a57",
+        "salt": "a5f2aa7749048e80",
+        "registration_date": "2026-01-13T17:11:35.250121"
+    }
 ]

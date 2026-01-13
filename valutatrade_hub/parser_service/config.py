@@ -1,52 +1,42 @@
+import os
 from dataclasses import dataclass, field
-from pathlib import Path
-from typing import Dict, List
+from typing import Tuple, Dict
 
-
-@dataclass
+@dataclass(frozen=True)
 class ParserConfig:
-    # --- базовые настройки ---
-    BASE_CURRENCY: str = "USD"
-    REQUEST_TIMEOUT: int = 10
-    RETRY_ATTEMPTS: int = 3
-    RETRY_DELAY: float = 1.0
+    """
+    Конфигурация Parser Service:
+    - API-ключи из переменных окружения
+    - Эндпоинты для запросов
+    - Списки валют
+    - Пути к файлам
+    - Таймауты запросов
+    """
 
-    # --- валюты ---
-    FIAT_CURRENCIES: List[str] = field(default_factory=lambda: [
-        "EUR", "GBP", "JPY", "RUB", "CNY", "AED"
-    ])
+    # ⚠️ Секретные ключи через переменные окружения
+    EXCHANGERATE_API_KEY: str = field(default_factory=lambda: os.getenv("EXCHANGERATE_API_KEY", ""))
 
-    CRYPTO_CURRENCIES: List[str] = field(default_factory=lambda: [
-        "BTC", "ETH", "SOL"
-    ])
+    # Эндпоинты
+    COINGECKO_URL: str = "https://api.coingecko.com/api/v3/simple/price"
+    EXCHANGERATE_API_URL: str = "https://v6.exchangerate-api.com/v6"
 
+    # Базовая валюта для всех запросов
+    BASE_FIAT_CURRENCY: str = "USD"
+
+    # Списки валют
+    FIAT_CURRENCIES: Tuple[str, ...] = ("EUR", "GBP", "RUB")
+    CRYPTO_CURRENCIES: Tuple[str, ...] = ("BTC", "ETH", "SOL")
+
+    # Сопоставление тикеров и CoinGecko ID
     CRYPTO_ID_MAP: Dict[str, str] = field(default_factory=lambda: {
         "BTC": "bitcoin",
         "ETH": "ethereum",
         "SOL": "solana",
     })
 
-    # --- API ---
-    COINGECKO_URL: str = "https://api.coingecko.com/api/v3/simple/price"
-    EXCHANGERATE_API_URL: str = "https://v6.exchangerate-api.com/v6"
-    EXCHANGERATE_API_KEY: str = "a748faeb2d9bb48fc113bd89"
+    # Пути к файлам
+    RATES_FILE_PATH: str = "data/rates.json"
+    HISTORY_FILE_PATH: str = "data/exchange_rates.json"
 
-    # --- cache ---
-    CACHE_TTL_MINUTES: int = 10
-    MAX_HISTORY_ENTRIES: int = 1000
-
-    # --- пути ---
-    BASE_DIR: Path = field(init=False)
-    DATA_DIR: Path = field(init=False)
-    RATES_FILE_PATH: Path = field(init=False)
-    HISTORY_FILE_PATH: Path = field(init=False)
-
-    def __post_init__(self):
-        self.BASE_DIR = Path(__file__).resolve().parents[2]
-        self.DATA_DIR = self.BASE_DIR / "data"
-
-        self.RATES_FILE_PATH = self.DATA_DIR / "exchange_rates.json"
-        self.HISTORY_FILE_PATH = self.DATA_DIR / "rates.json"
-
-    def ensure_directories(self):
-        self.DATA_DIR.mkdir(parents=True, exist_ok=True)
+    # Сетевые параметры
+    REQUEST_TIMEOUT: int = 10  # секунд

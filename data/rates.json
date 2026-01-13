@@ -1,290 +1,35 @@
-[
-  {
-    "id": "USD_EUR_20260113_072053",
-    "from_currency": "USD",
-    "to_currency": "EUR",
-    "rate": {
+{
+  "pairs": {
+    "BTC_USD": {
+      "rate": 93581,
+      "updated_at": "2026-01-13T18:47:34.010151+00:00",
+      "source": "CoinGeckoClient"
+    },
+    "ETH_USD": {
+      "rate": 3195.51,
+      "updated_at": "2026-01-13T18:47:34.010151+00:00",
+      "source": "CoinGeckoClient"
+    },
+    "SOL_USD": {
+      "rate": 143.28,
+      "updated_at": "2026-01-13T18:47:34.010151+00:00",
+      "source": "CoinGeckoClient"
+    },
+    "EUR_USD": {
       "rate": 0.8566,
-      "source": "exchangerate",
-      "timestamp": 1768288853.387744,
-      "type": "fiat"
+      "updated_at": "2026-01-13T18:47:34.300750+00:00",
+      "source": "ExchangeRateApiClient"
     },
-    "timestamp": "2026-01-13T07:20:53.390389+00:00",
-    "source": "api",
-    "meta": {
-      "pair": "USD_EUR"
-    }
-  },
-  {
-    "id": "USD_GBP_20260113_072053",
-    "from_currency": "USD",
-    "to_currency": "GBP",
-    "rate": {
+    "GBP_USD": {
       "rate": 0.7428,
-      "source": "exchangerate",
-      "timestamp": 1768288853.3877492,
-      "type": "fiat"
+      "updated_at": "2026-01-13T18:47:34.300750+00:00",
+      "source": "ExchangeRateApiClient"
     },
-    "timestamp": "2026-01-13T07:20:53.390389+00:00",
-    "source": "api",
-    "meta": {
-      "pair": "USD_GBP"
-    }
-  },
-  {
-    "id": "USD_JPY_20260113_072053",
-    "from_currency": "USD",
-    "to_currency": "JPY",
-    "rate": {
-      "rate": 157.9877,
-      "source": "exchangerate",
-      "timestamp": 1768288853.3877509,
-      "type": "fiat"
-    },
-    "timestamp": "2026-01-13T07:20:53.390389+00:00",
-    "source": "api",
-    "meta": {
-      "pair": "USD_JPY"
-    }
-  },
-  {
-    "id": "USD_RUB_20260113_072053",
-    "from_currency": "USD",
-    "to_currency": "RUB",
-    "rate": {
+    "RUB_USD": {
       "rate": 78.5337,
-      "source": "exchangerate",
-      "timestamp": 1768288853.3877518,
-      "type": "fiat"
-    },
-    "timestamp": "2026-01-13T07:20:53.390389+00:00",
-    "source": "api",
-    "meta": {
-      "pair": "USD_RUB"
+      "updated_at": "2026-01-13T18:47:34.300750+00:00",
+      "source": "ExchangeRateApiClient"
     }
   },
-  {
-    "id": "USD_CNY_20260113_072053",
-    "from_currency": "USD",
-    "to_currency": "CNY",
-    "rate": {
-      "rate": 6.9856,
-      "source": "exchangerate",
-      "timestamp": 1768288853.387754,
-      "type": "fiat"
-    },
-    "timestamp": "2026-01-13T07:20:53.390389+00:00",
-    "source": "api",
-    "meta": {
-      "pair": "USD_CNY"
-    }
-  },
-  {
-    "id": "USD_AED_20260113_072053",
-    "from_currency": "USD",
-    "to_currency": "AED",
-    "rate": {
-      "rate": 3.6725,
-      "source": "exchangerate",
-      "timestamp": 1768288853.387755,
-      "type": "fiat"
-    },
-    "timestamp": "2026-01-13T07:20:53.390389+00:00",
-    "source": "api",
-    "meta": {
-      "pair": "USD_AED"
-    }
-  },
-  {
-    "id": "USD_BTC_20260113_072053",
-    "from_currency": "USD",
-    "to_currency": "BTC",
-    "rate": {
-      "rate": 91843,
-      "source": "coingecko",
-      "timestamp": 1768288853.387758,
-      "type": "crypto"
-    },
-    "timestamp": "2026-01-13T07:20:53.390389+00:00",
-    "source": "api",
-    "meta": {
-      "pair": "USD_BTC"
-    }
-  },
-  {
-    "id": "USD_ETH_20260113_072053",
-    "from_currency": "USD",
-    "to_currency": "ETH",
-    "rate": {
-      "rate": 3123.53,
-      "source": "coingecko",
-      "timestamp": 1768288853.3877592,
-      "type": "crypto"
-    },
-    "timestamp": "2026-01-13T07:20:53.390389+00:00",
-    "source": "api",
-    "meta": {
-      "pair": "USD_ETH"
-    }
-  },
-  {
-    "id": "USD_SOL_20260113_072053",
-    "from_currency": "USD",
-    "to_currency": "SOL",
-    "rate": {
-      "rate": 140.23,
-      "source": "coingecko",
-      "timestamp": 1768288853.3877609,
-      "type": "crypto"
-    },
-    "timestamp": "2026-01-13T07:20:53.390389+00:00",
-    "source": "api",
-    "meta": {
-      "pair": "USD_SOL"
-    }
-  },
-  {
-    "id": "USD_EUR_20260113_072156",
-    "from_currency": "USD",
-    "to_currency": "EUR",
-    "rate": {
-      "rate": 0.8566,
-      "source": "exchangerate",
-      "timestamp": 1768288916.613447,
-      "type": "fiat"
-    },
-    "timestamp": "2026-01-13T07:21:56.617475+00:00",
-    "source": "api",
-    "meta": {
-      "pair": "USD_EUR"
-    }
-  },
-  {
-    "id": "USD_GBP_20260113_072156",
-    "from_currency": "USD",
-    "to_currency": "GBP",
-    "rate": {
-      "rate": 0.7428,
-      "source": "exchangerate",
-      "timestamp": 1768288916.613451,
-      "type": "fiat"
-    },
-    "timestamp": "2026-01-13T07:21:56.617475+00:00",
-    "source": "api",
-    "meta": {
-      "pair": "USD_GBP"
-    }
-  },
-  {
-    "id": "USD_JPY_20260113_072156",
-    "from_currency": "USD",
-    "to_currency": "JPY",
-    "rate": {
-      "rate": 157.9877,
-      "source": "exchangerate",
-      "timestamp": 1768288916.6134531,
-      "type": "fiat"
-    },
-    "timestamp": "2026-01-13T07:21:56.617475+00:00",
-    "source": "api",
-    "meta": {
-      "pair": "USD_JPY"
-    }
-  },
-  {
-    "id": "USD_RUB_20260113_072156",
-    "from_currency": "USD",
-    "to_currency": "RUB",
-    "rate": {
-      "rate": 78.5337,
-      "source": "exchangerate",
-      "timestamp": 1768288916.613454,
-      "type": "fiat"
-    },
-    "timestamp": "2026-01-13T07:21:56.617475+00:00",
-    "source": "api",
-    "meta": {
-      "pair": "USD_RUB"
-    }
-  },
-  {
-    "id": "USD_CNY_20260113_072156",
-    "from_currency": "USD",
-    "to_currency": "CNY",
-    "rate": {
-      "rate": 6.9856,
-      "source": "exchangerate",
-      "timestamp": 1768288916.6134558,
-      "type": "fiat"
-    },
-    "timestamp": "2026-01-13T07:21:56.617475+00:00",
-    "source": "api",
-    "meta": {
-      "pair": "USD_CNY"
-    }
-  },
-  {
-    "id": "USD_AED_20260113_072156",
-    "from_currency": "USD",
-    "to_currency": "AED",
-    "rate": {
-      "rate": 3.6725,
-      "source": "exchangerate",
-      "timestamp": 1768288916.6134589,
-      "type": "fiat"
-    },
-    "timestamp": "2026-01-13T07:21:56.617475+00:00",
-    "source": "api",
-    "meta": {
-      "pair": "USD_AED"
-    }
-  },
-  {
-    "id": "USD_BTC_20260113_072156",
-    "from_currency": "USD",
-    "to_currency": "BTC",
-    "rate": {
-      "rate": 91834,
-      "source": "coingecko",
-      "timestamp": 1768288916.613462,
-      "type": "crypto"
-    },
-    "timestamp": "2026-01-13T07:21:56.617475+00:00",
-    "source": "api",
-    "meta": {
-      "pair": "USD_BTC"
-    }
-  },
-  {
-    "id": "USD_ETH_20260113_072156",
-    "from_currency": "USD",
-    "to_currency": "ETH",
-    "rate": {
-      "rate": 3123.38,
-      "source": "coingecko",
-      "timestamp": 1768288916.613463,
-      "type": "crypto"
-    },
-    "timestamp": "2026-01-13T07:21:56.617475+00:00",
-    "source": "api",
-    "meta": {
-      "pair": "USD_ETH"
-    }
-  },
-  {
-    "id": "USD_SOL_20260113_072156",
-    "from_currency": "USD",
-    "to_currency": "SOL",
-    "rate": {
-      "rate": 140.23,
-      "source": "coingecko",
-      "timestamp": 1768288916.613464,
-      "type": "crypto"
-    },
-    "timestamp": "2026-01-13T07:21:56.617475+00:00",
-    "source": "api",
-    "meta": {
-      "pair": "USD_SOL"
-    }
-  }
-]
+  "last_refresh": "2026-01-13T18:47:34.303337+00:00"
+}

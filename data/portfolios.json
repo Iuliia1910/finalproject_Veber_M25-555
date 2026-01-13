@@ -1,44 +1,24 @@
-{
-  "1": {
-    "user_id": 1,
-    "wallets": {
-      "USD": {
-        "currency_code": "USD",
-        "balance": 500081.19241487083
-      },
-      "BTC": {
-        "currency_code": "BTC",
-        "balance": 0.0
-      },
-      "EUR": {
-        "currency_code": "EUR",
-        "balance": 100.0
-      },
-      "RUB": {
-        "currency_code": "RUB",
-        "balance": 100.0
-      }
+[
+    {
+        "user_id": 1,
+        "wallets": {
+            "USD": {
+                "balance": 469905.0
+            },
+            "EUR": {
+                "balance": 90.0
+            },
+            "BTC": {
+                "balance": 5.0
+            }
+        }
+    },
+    {
+        "user_id": 2,
+        "wallets": {
+            "EUR": {
+                "balance": 10.0
+            }
+        }
     }
-  },
-  "2": {
-    "user_id": 2,
-    "wallets": {
-      "BTC": {
-        "currency_code": "BTC",
-        "balance": 0.0
-      },
-      "USD": {
-        "currency_code": "USD",
-        "balance": 59338199.214
-      },
-      "EUR": {
-        "currency_code": "EUR",
-        "balance": 10.0
-      }
-    }
-  },
-  "3": {
-    "user_id": 3,
-    "wallets": {}
-  }
-}
+]

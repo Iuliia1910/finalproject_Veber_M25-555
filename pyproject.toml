@@ -14,18 +14,14 @@ python = "^3.9"
 toml = "^0.10.2"
 requests = "^2.32.5"
 
-[tool.poetry.scripts]
-valutatrade = "valutatrade_hub.cli.interface:main"
-project = "valutatrade_hub.cli.interface:main"
+[tool.valutatrade]
+USERS_FILE = "data/users.json"
+PORTFOLIOS_FILE = "data/portfolios.json"
+RATES_FILE = "data/rates.json"
 
-[tool.black]
-line-length = 88
-target-version = ['py39']
+RATES_TTL_SECONDS = 300
+DEFAULT_BASE_CURRENCY = "USD"
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.valutatrade.api_keys]
-exchangerate = "a748faeb2d9bb48fc113bd89"
-coingecko = "your_coingecko_key_here"
+LOG_LEVEL = "INFO"
+LOG_FORMAT = "%(asctime)s | %(levelname)s | %(message)s"
+LOG_PATH = "logs/app.log"

@@ -24,7 +24,7 @@ class RatesScheduler:
         """Задача для планировщика."""
         logger.info("Running scheduled rates update...")
         try:
-            result = self.updater.run_update()
+            result = self.update.update_rates()
 
             # Логируем результат
             if result["total_rates"] > 0:
@@ -84,4 +84,4 @@ class RatesScheduler:
 
     def run_once(self):
         """Выполнить одно обновление (для CLI)."""
-        return self.updater.run_update()
+        return self.updater.update_rates()

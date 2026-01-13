@@ -1,80 +1,63 @@
-import json
+import logging
 from datetime import datetime, timezone
-from typing import Dict, Any
 
-from .config import ParserConfig
+from .api_clients import BaseApiClient, CoinGeckoClient, ExchangeRateApiClient, ApiRequestError
 from .storage import RatesStorage
-from valutatrade_hub.parser_service.config import ParserConfig
-from valutatrade_hub.parser_service.storage import RatesStorage
-from valutatrade_hub.parser_service.api_clients import RateManager
+from valutatrade_hub.core.utils import RatesCache  # для обновления rates.json Core
+from .config import ParserConfig
+
+logger = logging.getLogger(__name__)
+
 
 class RatesUpdater:
-    def __init__(self, config: ParserConfig | None = None):
-        self.config = config or ParserConfig()
-        self.rate_manager = RateManager(self.config)
-        self.storage = RatesStorage(self.config)
+    """
+    Координатор процесса обновления курсов валют.
+    Принимает список API-клиентов и хранилище для записи истории.
+    """
+    def __init__(self, clients: list[BaseApiClient], storage: RatesStorage, cache: RatesCache):
+        self.clients = clients
+        self.storage = storage
+        self.cache = cache
+        self.config = ParserConfig()
 
-    def update_rates(self, force: bool = False):
-        """
-        Обновляет курсы валют.
-        """
-        all_rates = self.rate_manager.get_all_rates()
+    def run_update(self):
+        logger.info("=== START rates update ===")
+        all_rates = []
 
-        if not all_rates:
-            raise RuntimeError("Не удалось получить курсы валют")
+        for client in self.clients:
+            client_name = client.__class__.__name__
+            try:
+                logger.info(f"Запрос курсов от {client_name}...")
+                rates = client.fetch_rates()
+                logger.info(f"Получено {len(rates)} курсов от {client_name}")
 
-        self.storage.save_current_rates(all_rates, source="api")
-        self.storage.save_to_history(all_rates, source="api")
+                timestamp = datetime.now(timezone.utc).isoformat()
 
-        return {
-            "status": "success",
-            "rates_count": len(all_rates),
-        }
+                # Формируем записи с метаданными для истории и обновления кэша
+                for pair, rate in rates.items():
+                    from_curr, to_curr = pair.split("_")
+                    record = {
+                        "from_currency": from_curr,
+                        "to_currency": to_curr,
+                        "rate": rate,
+                        "timestamp": timestamp,
+                        "source": client_name
+                    }
+                    all_rates.append(record)
 
-    def fetch_rates_from_apis(self) -> Dict[str, float]:
-        """Возвращает словарь курсов в формате 'USD_BTC': rate"""
-        raw_rates = self.rate_manager.get_all_rates()
-        rates = {}
-        for pair_key, data in raw_rates.items():
-            # ожидаем data['rate'] как float
-            rates[pair_key] = data.get("rate")
-        return rates
+                    # Обновляем Core cache (rates.json)
+                    self.cache.update_pair(from_curr, to_curr, rate, source=client_name, updated_at=timestamp)
 
-    def run_update(self, sources: list = None) -> Dict[str, Any]:
-        return self.update_rates(force=True)
+            except ApiRequestError as e:
+                logger.error(f"Ошибка клиента {client_name}: {e}")
+            except Exception as e:
+                logger.exception(f"Неожиданная ошибка при запросе {client_name}: {e}")
 
-    def load_rates(self):
-        """Загрузить курсы из RATES_FILE_PATH в RateManager"""
-        data = self.storage.load_current_rates()
-        self.rate_manager.update_rates_from_dict(data.get("pairs", {}))
+        # Сохраняем все новые записи в exchange_rates.json (история)
+        if all_rates:
+            self.storage.save_rates(all_rates)
+            logger.info(f"Сохранено {len(all_rates)} новых записей в history file")
+        else:
+            logger.warning("Нет новых курсов для сохранения")
 
-    def get_summary(self) -> str:
-        try:
-            data = self.storage.load_current_rates()
-            pairs = data.get("pairs", {})
-            last_refresh = data.get("last_refresh")
-
-            summary = ["СВОДКА ПО КУРСАМ ВАЛЮТ"]
-            if last_refresh:
-                try:
-                    dt = datetime.fromisoformat(last_refresh.replace('Z', '+00:00'))
-                    summary.append(f"Обновлено: {dt.strftime('%Y-%m-%d %H:%M:%S')}")
-                except Exception:
-                    summary.append(f"Обновлено: {last_refresh}")
-
-            summary.append(f"Всего курсов: {len(pairs)}")
-
-            sources = {}
-            for pair_data in pairs.values():
-                source = pair_data.get("source", "unknown")
-                sources[source] = sources.get(source, 0) + 1
-
-            for source, count in sources.items():
-                summary.append(f"  - {source}: {count}")
-
-            return "\n".join(summary)
-        except Exception as e:
-            return f"Не удалось загрузить сводку: {e}"
-
-
-
+        logger.info("=== FINISH rates update ===")
