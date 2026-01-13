@@ -1,7 +1,6 @@
 import json
 from pathlib import Path
 import tempfile
-from datetime import datetime
 
 class RatesStorage:
     def __init__(self, file_path="data/exchange_rates.json"):

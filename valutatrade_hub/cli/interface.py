@@ -1,17 +1,16 @@
-import sys
-from valutatrade_hub.core.usecases import register, login, deposit, buy, sell, get_rate_usecase, get_user_portfolio
-from valutatrade_hub.core.exceptions import InsufficientFundsError, CurrencyNotFoundError, ApiRequestError
+import json
 import logging
+from pathlib import Path
+from valutatrade_hub.core.usecases import register, login, deposit, buy, sell, get_rate_usecase 
+from valutatrade_hub.core.exceptions import InsufficientFundsError, CurrencyNotFoundError, ApiRequestError
 from valutatrade_hub.parser_service.config import ParserConfig
-from valutatrade_hub.parser_service.api_clients import CoinGeckoClient, ExchangeRateApiClient, ApiRequestError
+from valutatrade_hub.parser_service.api_clients import CoinGeckoClient, ExchangeRateApiClient
 from valutatrade_hub.parser_service.storage import RatesStorage
 from valutatrade_hub.parser_service.updater import RatesUpdater
-from valutatrade_hub.core.usecases import get_user_portfolio, get_rate_usecase
 from valutatrade_hub.core.utils import RatesCache
 from valutatrade_hub.infra.settings import SettingsLoader
 logger = logging.getLogger(__name__)
-from pathlib import Path
-import json
+
 
 # ================= ГЛОБАЛЬНАЯ СЕССИЯ =================
 current_user = None  # {"user_id": int, "username": str} после login

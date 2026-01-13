@@ -1,18 +1,17 @@
 # valutatrade_hub/parser_service/api_clients.py
+import requests
+from abc import ABC, abstractmethod
+from .config import ParserConfig
 
 class ApiRequestError(Exception):
     """Выбрасывается при ошибках обращения к внешним API"""
     pass
-
-from abc import ABC, abstractmethod
 
 class BaseApiClient(ABC):
     @abstractmethod
     def fetch_rates(self) -> dict:
         """Возвращает словарь курсов валют в формате {PAIR: rate}"""
         pass
-import requests
-from .config import ParserConfig
 
 class CoinGeckoClient(BaseApiClient):
     def __init__(self, config: ParserConfig):

@@ -107,12 +107,6 @@ class Wallet:
         self._balance -= amount
         return self._balance
 
-    def deposit(self, amount: float):
-        if amount <= 0:
-            raise ValueError("'amount' должен быть положительным числом")
-        self._balance += amount
-        return self._balance
-
     def get_balance_info(self) -> dict:
         """Возвращает информацию о текущем балансе"""
         return {

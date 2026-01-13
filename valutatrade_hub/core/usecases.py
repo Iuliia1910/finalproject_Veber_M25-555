@@ -1,14 +1,13 @@
 import os
 import json
 import hashlib
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Any
-from valutatrade_hub.core.currencies import get_currency, Currency
-from valutatrade_hub.core.exceptions import InsufficientFundsError, CurrencyNotFoundError, ApiRequestError
+from valutatrade_hub.core.currencies import get_currency
+from valutatrade_hub.core.exceptions import InsufficientFundsError, CurrencyNotFoundError
 from valutatrade_hub.decorators import log_action
 from valutatrade_hub.infra.settings import SettingsLoader
 from pathlib import Path
-from valutatrade_hub.infra.settings import SettingsLoader
 
 
 # ================= SETTINGS SINGLETON =================
@@ -175,7 +174,7 @@ def buy(user_id: int, currency_code: str, amount: float, base_currency: str = No
 
     # Получаем курсы из rates.json
     if not rates_file.exists():
-        raise CurrencyNotFoundError(f"Нет данных по курсам")
+        raise CurrencyNotFoundError("Нет данных по курсам")
     with rates_file.open("r", encoding="utf-8") as f:
         rates_data = json.load(f)
     rates = rates_data.get("pairs", {})
@@ -230,7 +229,7 @@ def sell(user_id: int, currency_code: str, amount: float, base_currency: str = N
 
     # Получаем курсы
     if not rates_file.exists():
-        raise CurrencyNotFoundError(f"Нет данных по курсам")
+        raise CurrencyNotFoundError("Нет данных по курсам")
     with rates_file.open("r", encoding="utf-8") as f:
         rates_data = json.load(f)
     rates = rates_data.get("pairs", {})

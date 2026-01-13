@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime, timezone
 
-from .api_clients import BaseApiClient, CoinGeckoClient, ExchangeRateApiClient, ApiRequestError
+from .api_clients import BaseApiClient, ApiRequestError
 from .storage import RatesStorage
 from valutatrade_hub.core.utils import RatesCache  # для обновления rates.json Core
 from .config import ParserConfig
