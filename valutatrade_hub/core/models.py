@@ -1,13 +1,11 @@
-# valutatrade_hub/core/models.py
 import hashlib
 import secrets
 from datetime import datetime
-from dataclasses import dataclass, field
 from typing import Dict, Optional
+from .exceptions import InsufficientFundsError, InvalidAmountError, InvalidCurrencyCodeError
 
 
 class User:
-
     def __init__(self, user_id: int, username: str, hashed_password: str,
                  salt: str, registration_date: datetime):
         self._user_id = user_id
@@ -106,8 +104,10 @@ class User:
 
 
 class Wallet:
-
     def __init__(self, currency_code: str, balance: float = 0.0):
+        if not currency_code or not isinstance(currency_code, str):
+            raise InvalidCurrencyCodeError(currency_code)
+
         self.currency_code = currency_code.upper()
         self._balance = balance
 
@@ -125,14 +125,18 @@ class Wallet:
 
     def deposit(self, amount: float):
         if amount <= 0:
-            raise ValueError("Сумма пополнения должна быть положительной")
+            raise InvalidAmountError(amount)
         self.balance = self._balance + amount
 
     def withdraw(self, amount: float):
         if amount <= 0:
-            raise ValueError("Сумма снятия должна быть положительной")
+            raise InvalidAmountError(amount)
         if amount > self._balance:
-            raise ValueError(f"Недостаточно средств. Доступно: {self._balance}")
+            raise InsufficientFundsError(
+                self.currency_code,
+                self._balance,
+                amount
+            )
         self.balance = self._balance - amount
 
     def get_balance_info(self) -> Dict:
@@ -156,7 +160,6 @@ class Wallet:
 
 
 class Portfolio:
-
     def __init__(self, user_id: int, wallets: Optional[Dict[str, Wallet]] = None):
         self._user_id = user_id
         self._wallets = wallets or {}

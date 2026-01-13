@@ -5,23 +5,27 @@ description = "ValutaTrade Hub - управление валютными пор�
 authors = ["Iuliia Veber <pestonova.yulya@yandex.ru>"]
 readme = "README.md"
 
-# Указываем, что основной пакет находится в корне
 packages = [
-    { include = "valutatrade_hub", from = "." }
+    {include = "valutatrade_hub", from = "."},
 ]
 
-# Или можно отключить package mode если возникают проблемы
-# package-mode = false
+[tool.poetry.dependencies]
+python = "^3.9"
+toml = "^0.10.2"
+requests = "^2.32.5"
 
 [tool.poetry.scripts]
+valutatrade = "valutatrade_hub.cli.interface:main"
 project = "valutatrade_hub.cli.interface:main"
 
-[tool.poetry.dependencies]
-python = "^3.11"  # Рекомендую использовать 3.11 вместо 3.13 для совместимости
-
-[tool.ruff]
-line-length = 120
+[tool.black]
+line-length = 88
+target-version = ['py39']
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.valutatrade.api_keys]
+exchangerate = "a748faeb2d9bb48fc113bd89"
+coingecko = "your_coingecko_key_here"
